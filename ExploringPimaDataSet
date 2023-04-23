@@ -1,0 +1,100 @@
+
+import numpy as np
+import pandas as pd
+import seaborn as sns
+from matplotlib import pyplot as plt
+import missingno as msno
+from datetime import date
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import LocalOutlierFactor
+from sklearn.preprocessing import MinMaxScaler, LabelEncoder, StandardScaler, RobustScaler
+from sklearn import preprocessing
+
+#display all columns
+pd.set_option("Display.max_columns", None)
+pd.set_option('display.max_rows', None)
+pd.set_option('display.float_format', lambda x: '%.3f' % x)
+
+#acessando o arquivo e explorando os dados, estatistica.
+file = pd.read_csv("/Users/joaokasprowicz/Desktop/dados.csv")
+
+#Apenas os 5 primeiras linhas, incluindo o header.
+print("Head".center(70,"~"))
+print(file.head())
+
+#Utilizando o metodo describe do pandas, permite acesso a uma boa parte da estatistica descritiva.
+print("Describe".center(70,"~"))
+print(file.describe())
+
+#data types
+print("Data Types".center(70,"~"))
+print(file.info())
+
+#Nas exploração do conjunto de dados, é importante lidar com os missing values.
+#bem como, os valores errados.....
+print("Missing values".center(70,"~"))
+file[['Glucose','BloodPressure','SkinThickness','Insulin','BMI','Age']]=file[['Glucose','BloodPressure','SkinThickness','Insulin','BMI','Age']].replace(0,np.NaN)
+print(file.isna().sum())
+
+#DISTRUIBUIÇÃO DOS DADOS.
+#Conseguimos verificar visualizando os graficos que temos, valores zerados, e alguns valores errados.
+#por isso é importante antes de olhar o dataset, criar uma familiaridade com os dados.
+fig, ax = plt.subplots( 4, 2, figsize=(14,15))
+sns.histplot(file.Age,kde=True,ax=ax[0,0])
+sns.histplot(file.Pregnancies,kde=True,  ax=ax[0,1])
+sns.histplot(file.Glucose,kde=True,  ax=ax[1,0])
+sns.histplot(file.BloodPressure,kde=True,  ax=ax[1,1])
+sns.histplot(file.SkinThickness,kde=True,  ax=ax[2,0])
+sns.histplot(file.Insulin,kde=True,  ax=ax[2,1])
+sns.histplot(file.DiabetesPedigreeFunction,kde=True, ax=ax[3,0])
+sns.histplot(file.BMI,kde=True, ax=ax[3,1])
+plt.show()
+
+#alterando os missing values (NaN values) com a media.
+file['Glucose'].fillna(file['Glucose'].mean(), inplace=True)
+file['BloodPressure'].fillna(file['BloodPressure'].mean(), inplace=True)
+file['SkinThickness'].fillna(file['SkinThickness'].mean(), inplace=True)
+file['Insulin'].fillna(file['Insulin'].mean(), inplace=True)
+file['BMI'].fillna(file['BMI'].mean(), inplace=True)
+
+#convertendo a coluna de resultado (OUTCOME) para uma variavel categorica
+file['Outcome']=file['Outcome'].astype('category')
+sns.countplot(file['Outcome'])
+
+print("PORCENTAGEM POR RESULTADO".center(70,"~"))
+print(file['Outcome'].value_counts(normalize=True))
+print("MEDIA AGRUPADO POR RESULTADO".center(70,"~"))
+print(file.groupby(['Outcome']).mean())
+
+print("correlaçao de variaveis".center(70,"~"))
+file_cor = file[['Insulin','Glucose','Age','Pregnancies','BloodPressure','BMI']].dropna().corr()
+print(file_cor)
+
+print("Analisando correlação de variaveis com auxilio de um heatmap".center(70,"~"))
+sns.heatmap(file_cor, annot=True)
+plt.show()
+
+
+
+#Inferencia estatistica.
+#teste de hipotese
+#primeiro passo, determinar a hipotese.
+#H0: O numero de gravidez aumenta a probabilidade de ter diabetes.
+#H1: O numero de gravidez não aumenta a probabilidade de ter diabetes.
+
+
+#segundo passo, escolha do teste estatistico apropriado.
+
+
+
+
+
+
+#terceiro passo, Calcular o p valor.
+#Determinar a significância estatística.
+
+
+
+
+
