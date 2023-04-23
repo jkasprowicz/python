@@ -3,13 +3,9 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
-import missingno as msno
-from datetime import date
-from sklearn.metrics import accuracy_score
-from sklearn.model_selection import train_test_split
-from sklearn.neighbors import LocalOutlierFactor
-from sklearn.preprocessing import MinMaxScaler, LabelEncoder, StandardScaler, RobustScaler
-from sklearn import preprocessing
+import scipy.stats as st
+
+
 
 #display all columns
 pd.set_option("Display.max_columns", None)
@@ -23,14 +19,18 @@ file = pd.read_csv("/Users/joaokasprowicz/Desktop/dados.csv")
 print("Head".center(70,"~"))
 print(file.head())
 
+
+#descobrir padrões
 #Utilizando o metodo describe do pandas, permite acesso a uma boa parte da estatistica descritiva.
 print("Describe".center(70,"~"))
 print(file.describe())
+
 
 #data types
 print("Data Types".center(70,"~"))
 print(file.info())
 
+#detectar anomalias
 #Nas exploração do conjunto de dados, é importante lidar com os missing values.
 #bem como, os valores errados.....
 print("Missing values".center(70,"~"))
@@ -50,6 +50,8 @@ sns.histplot(file.Insulin,kde=True,  ax=ax[2,1])
 sns.histplot(file.DiabetesPedigreeFunction,kde=True, ax=ax[3,0])
 sns.histplot(file.BMI,kde=True, ax=ax[3,1])
 plt.show()
+
+
 
 #alterando os missing values (NaN values) com a media.
 file['Glucose'].fillna(file['Glucose'].mean(), inplace=True)
@@ -77,24 +79,63 @@ plt.show()
 
 
 
-#Inferencia estatistica.
+#testar hipoteses e verificar suposições
+
 #teste de hipotese
 #primeiro passo, determinar a hipotese.
-#H0: O numero de gravidez aumenta a probabilidade de ter diabetes.
-#H1: O numero de gravidez não aumenta a probabilidade de ter diabetes.
+
+
+#HKruskal Wallis test
+#Since atleast one dataset is not normally distributed we shall proceed with Kruskal test.
+#Hypothesis:
+#H0: Average Glucose levels is the same for all pregnancies.
+#H1: Average Glucose levels is not the same for all pregnancies
 
 
 #segundo passo, escolha do teste estatistico apropriado.
 
-
-
-
-
-
 #terceiro passo, Calcular o p valor.
 #Determinar a significância estatística.
 
+positive_df=file[file['Outcome']==1]
+negative_df=file[file['Outcome']==0]
+
+preg_0=positive_df[positive_df['Pregnancies']==0]
+preg_1=positive_df[positive_df['Pregnancies']==1]
+preg_2=positive_df[positive_df['Pregnancies']==2]
+preg_3=positive_df[positive_df['Pregnancies']==3]
+preg_4=positive_df[positive_df['Pregnancies']==4]
+preg_5=positive_df[positive_df['Pregnancies']==5]
+preg_6=positive_df[positive_df['Pregnancies']==6]
+preg_7=positive_df[positive_df['Pregnancies']==7]
+preg_8=positive_df[positive_df['Pregnancies']==8]
+preg_9=positive_df[positive_df['Pregnancies']==9]
+preg_10=positive_df[positive_df['Pregnancies']==10]
+preg_11=positive_df[positive_df['Pregnancies']==11]
+preg_12=positive_df[positive_df['Pregnancies']==12]
+preg_13=positive_df[positive_df['Pregnancies']==13]
+preg_14=positive_df[positive_df['Pregnancies']==14]
+preg_15=positive_df[positive_df['Pregnancies']==15]
+preg_16=positive_df[positive_df['Pregnancies']==16]
+preg_17=positive_df[positive_df['Pregnancies']==17]
+
+for i in range(18):
+    p=positive_df[positive_df['Pregnancies']==i]['Glucose']
+    if st.shapiro(p)[1]>0.95 or st.shapiro(p)[1]<0.05:
+        print(i)
+        print(st.shapiro(p))
+        break
+
+print(st.kruskal(preg_0['Glucose'],preg_1['Glucose'],preg_2['Glucose'],preg_3['Glucose'],preg_4['Glucose'],preg_5['Glucose'],preg_6['Glucose'],preg_7['Glucose'],preg_8['Glucose'],preg_9['Glucose'],preg_10['Glucose'],preg_11['Glucose'],preg_12['Glucose'],preg_13['Glucose'],preg_14['Glucose'],preg_15['Glucose'],preg_17['Glucose']))
+
+#Since pvalue>0.05 test stastic falls in the non-rejection region.
+#Conclusion: Average glucose levels does not change with pregnancies if a woman is diabetic
+
+plt.figure(figsize=(10,10))
+ax=sns.lineplot(x='Pregnancies',y='Glucose',data=file,hue='Outcome',style='Outcome',markers=True)
+plt.xticks([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17])
+plt.title('Effect of Pregnancies on Glucose')
+plt.show()
 
 
-
-
+#Generally Glucose level is higher for diabetic women but there is no such visible pattern for pregnancy
