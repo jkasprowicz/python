@@ -1,21 +1,23 @@
-import random
+
+import random as rd
+
 
 cores =["AZ", "VM", "VD","AM","LA","RX","RO"]
 
-vitoria = False 
-rodada - 1
+vitoria = False
+rodada = 1
 
 while not vitoria:
     print("Jogo da senha - Rodada", rodada)
-    sequencia = [random.choices(cores) for item in range (1,6)]
+    sequencia = [rd.choices(cores) for item in range (1,6)]
 
     nr_tentativa = 1
     while nr_tentativa <= 10:
-        print(" > Tentativa", nr_tentativa,"--", end-'')
+        print(" > Tentativa", nr_tentativa,"--", end='')
         tentativa=[]
         nr_item = 1
         for nr_item in range(1,6):
-            tentativa.append(random.choices(cores))
+            tentativa.append(rd.choices(cores))
 
         vitoria = True
         resultado = []
@@ -25,7 +27,7 @@ while not vitoria:
                 resultado.append('BR')
             else:
                 resultado.append('PR')
-        
+
         print(resultado)
         nr_tentativa += 1
         if vitoria:
