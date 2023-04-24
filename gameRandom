@@ -33,10 +33,10 @@ while not vitoria:
         if vitoria:
             break
 
-if vitoria:
-    print('Voce ganhou!!')
-    print(tentativa)
-else:
-    print('Voce perdeu!')
+    if vitoria:
+        print('Voce ganhou!!')
+        print(tentativa)
+    else:
+        print('Voce perdeu!')
 
-rodada += 1
+    rodada += 1
